@@ -100,6 +100,12 @@ Typical flow:
 2. npm run build
 3. Deploy dist folder
 
+### GitHub Pages
+
+This repository includes a GitHub Actions workflow at [.github/workflows/deploy.yml](.github/workflows/deploy.yml) that builds the app and publishes the `dist` folder to GitHub Pages on every push to `main`.
+
+Before the first publish, make sure GitHub Pages is set to use GitHub Actions in the repository settings.
+
 ## Customization
 
 You can personalize content by editing:
