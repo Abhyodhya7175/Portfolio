@@ -641,6 +641,8 @@ export default function Portfolio() {
   const [formState, setFormState] = useState("idle"); // idle | sending | sent | error
 
   useEffect(() => {
+    const supportsObserver = typeof window !== "undefined" && "IntersectionObserver" in window;
+
     const intro = createTimeline({ autoplay: true })
       .add("nav", {
         opacity: [0, 1],
@@ -667,7 +669,7 @@ export default function Portfolio() {
         "-=260"
       );
 
-    const cardObserver = new IntersectionObserver(
+    const cardObserver = supportsObserver ? new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
@@ -681,9 +683,9 @@ export default function Portfolio() {
         });
       },
       { threshold: 0.15 }
-    );
+    ) : null;
 
-    const sectionObserver = new IntersectionObserver(
+    const sectionObserver = supportsObserver ? new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
@@ -698,17 +700,21 @@ export default function Portfolio() {
         });
       },
       { threshold: 0.2 }
-    );
+    ) : null;
 
     const sectionNodes = document.querySelectorAll(".section-stage");
-    sectionNodes.forEach((node) => {
-      set(node, { opacity: 0, translateY: 46, filter: "blur(12px)" });
-      sectionObserver.observe(node);
-    });
+    if (sectionObserver) {
+      sectionNodes.forEach((node) => {
+        set(node, { opacity: 0, translateY: 46, filter: "blur(12px)" });
+        sectionObserver.observe(node);
+      });
+    }
 
-    document
-      .querySelectorAll(".proj-card, .cert-card, .tl-item, .c-link")
-      .forEach((el) => cardObserver.observe(el));
+    if (cardObserver) {
+      document
+        .querySelectorAll(".proj-card, .cert-card, .tl-item, .c-link")
+        .forEach((el) => cardObserver.observe(el));
+    }
 
     const hoverUnsubscribers = [];
     const bindHover = (selector, enterProps, leaveProps) => {
@@ -787,8 +793,8 @@ export default function Portfolio() {
     return () => {
       intro.pause();
       orbLoop.pause();
-      cardObserver.disconnect();
-      sectionObserver.disconnect();
+      cardObserver?.disconnect();
+      sectionObserver?.disconnect();
       hoverUnsubscribers.forEach((unsubscribe) => unsubscribe());
       document.removeEventListener("click", onAnchorClick);
       remove(".proj-card, .cert-card, .tl-item, .c-link, .hero-orb, nav");
