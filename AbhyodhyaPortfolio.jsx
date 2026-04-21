@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { animate, createTimeline, remove, set, stagger } from "animejs";
+import emailjs from "@emailjs/browser";
 
 /* ─── GLOBAL STYLES ─────────────────────────────────────── */
 const GlobalStyles = () => (
@@ -637,7 +638,7 @@ function RevealDiv({ className, children, delay = "" }) {
 /* ─── MAIN COMPONENT ─────────────────────────────────────── */
 export default function Portfolio() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [formState, setFormState] = useState("idle"); // idle | sending | sent
+  const [formState, setFormState] = useState("idle"); // idle | sending | sent | error
 
   useEffect(() => {
     const intro = createTimeline({ autoplay: true })
@@ -799,9 +800,40 @@ export default function Portfolio() {
   async function handleSubmit(e) {
     e.preventDefault();
     setFormState("sending");
-    await new Promise(r => setTimeout(r, 1600));
-    setFormState("sent");
-    setTimeout(() => { setFormState("idle"); e.target.reset(); }, 3000);
+
+    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
+    if (!serviceId || !templateId || !publicKey) {
+      console.error("FAILED... Missing EmailJS environment variables");
+      setFormState("idle");
+      alert("Message failed to send. Please try again.");
+      return;
+    }
+
+    const form = e.target;
+    // These keys must match the {{variable_names}} in your EmailJS template.
+    const templateParams = {
+      from_name: form.name.value,
+      reply_to: form.email.value,
+      subject: form.subject.value || "No Subject",
+      message: form.msg.value,
+    };
+
+    try {
+      await emailjs.send(serviceId, templateId, templateParams, publicKey);
+      setFormState("sent");
+      setTimeout(() => {
+        setFormState("idle");
+        form.reset();
+      }, 3000);
+    } catch (error) {
+      console.error("FAILED...", error);
+      const reason = error?.text || error?.message || "Unknown EmailJS error";
+      setFormState("idle");
+      alert(`Message failed to send. ${reason}`);
+    }
   }
 
   return (
@@ -1119,12 +1151,19 @@ export default function Portfolio() {
                 <button
                   type="submit"
                   className="btn-primary"
-                  style={formState === "sent" ? {background:"#4ade80",boxShadow:"0 0 28px rgba(74,222,128,0.3)"} : {}}
+                  style={
+                    formState === "sent"
+                      ? { background: "#4ade80", boxShadow: "0 0 28px rgba(74,222,128,0.3)" }
+                      : formState === "error"
+                        ? { background: "#ef4444", boxShadow: "0 0 28px rgba(239,68,68,0.25)" }
+                        : {}
+                  }
                   disabled={formState === "sending"}
                 >
                   {formState === "idle" && "Send Message ↑"}
                   {formState === "sending" && "Sending…"}
                   {formState === "sent" && "Message Sent ✓"}
+                  {formState === "error" && "Config/Send Failed ✕"}
                 </button>
               </form>
             </RevealDiv>
