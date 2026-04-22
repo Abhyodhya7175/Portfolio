@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { animate, createTimeline, remove, set, stagger } from "animejs";
 import emailjs from "@emailjs/browser";
-import { Award, BarChart3, CloudSun, Github, Handshake, Linkedin, Mail, Phone, Shield, Target, Zap } from "lucide-react";
+import { ChartBar, CloudSun, EnvelopeSimple, GithubLogo, Handshake, InstagramLogo, Lightning, LinkedinLogo, Phone, ShieldCheck, Target, Trophy } from "phosphor-react";
 
 /* ─── GLOBAL STYLES ─────────────────────────────────────── */
 const GlobalStyles = () => (
@@ -509,7 +509,7 @@ const PROJECTS = [
     github: "#", live: "#",
   },
   {
-    icon: <Shield size={20} />,
+    icon: <ShieldCheck size={20} />,
     iconBg: "linear-gradient(135deg,#ff6b8a22,#ff8c6922)",
     title: "Preventive Healthcare System",
     desc: "Early risk assessment platform developed during Ignithon hackathon at KIIT. Conducts health screenings and identifies at-risk users through structured data collection.",
@@ -876,6 +876,19 @@ export default function Portfolio() {
           ))}
         </ul>
         <div style={{display:"flex",alignItems:"center",gap:"14px"}}>
+          <a 
+          href="https://drive.google.com/file/d/1W_D2ieM8UwQcTUMdAL-A7g0p_uAia0FG/view?usp=sharing" 
+          download="Abhyodhya_Kumar_Resume.pdf"
+          className="nav-cta" 
+          style={{ background: "transparent", border: "1px solid var(--cyan)", color: "var(--cyan)" }}
+          onClick={(e) => {
+            // Optional: Add a click animation
+            animate(e.currentTarget, { scale: 0.95, duration: 150, easing: "easeOutQuad" })
+              .then(() => animate(e.currentTarget, { scale: 1, duration: 150, easing: "easeOutQuad" }));
+          }}
+          >
+            Resume ↓
+          </a>
           <a href="#contact" className="nav-cta">Hire Me →</a>
           <button className="hamburger" onClick={() => setMenuOpen(o => !o)} aria-label="Menu">
             <span style={menuOpen?{transform:"rotate(45deg) translate(5px,5px)"}:{}} />
@@ -963,9 +976,9 @@ export default function Portfolio() {
             </div>
             <div className="value-cards">
               {[
-                { icon:<Zap size={18} />, title:"Fast Learner", desc:"97% on Meta's Front-End certificate. I absorb new technologies quickly and apply them in real projects." },
+                { icon:<Lightning size={18} />, title:"Fast Learner", desc:"97% on Meta's Front-End certificate. I absorb new technologies quickly and apply them in real projects." },
                 { icon:<Target size={18} />, title:"Problem Solver", desc:"DSA-trained thinking combined with hands-on hackathon experience. I tackle hard problems systematically." },
-                { icon:<BarChart3 size={18} />, title:"Data Driven", desc:"Proficient in statistical analysis and visualization with Python, Pandas, Numpy, and Tableau." },
+                { icon:<ChartBar size={18} />, title:"Data Driven", desc:"Proficient in statistical analysis and visualization with Python, Pandas, Numpy, and Tableau." },
                 { icon:<Handshake size={18} />, title:"Team Player", desc:"Proven collaboration through multi-day hackathons. I design workflows and help teammates ship." },
               ].map((v, i) => (
                 <RevealDiv key={v.title} className="vcard" delay={`d${i}`}>
@@ -1061,7 +1074,7 @@ export default function Portfolio() {
                       <div className="tl-title">{e.title}</div>
                       <div className="tl-org">{e.org}</div>
                       <div className="tl-desc">{e.desc}</div>
-                      <div className="tl-pct"><Award size={13} /> {e.pct}</div>
+                      <div className="tl-pct"><Trophy size={13} /> {e.pct}</div>
                     </div>
                   </div>
                 ))}
@@ -1120,7 +1133,7 @@ export default function Portfolio() {
               </p>
               <div className="c-links">
                 <a href="mailto:abhyodhyaoff2344@gmail.com" className="c-link">
-                  <div className="c-link-icon"><Mail size={16} /></div>
+                  <div className="c-link-icon"><EnvelopeSimple size={16} /></div>
                   <div>
                     <div className="c-link-lbl">Email</div>
                     <div className="c-link-val">abhyodhyaoff2344@gmail.com</div>
@@ -1136,7 +1149,7 @@ export default function Portfolio() {
                   <span style={{color:"var(--text3)",marginLeft:"auto"}}>↗</span>
                 </a>
                 <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="c-link">
-                  <div className="c-link-icon"><Linkedin size={16} /></div>
+                  <div className="c-link-icon"><LinkedinLogo size={16} /></div>
                   <div>
                     <div className="c-link-lbl">LinkedIn</div>
                     <div className="c-link-val">linkedin.com/in/abhyodhya</div>
@@ -1144,10 +1157,18 @@ export default function Portfolio() {
                   <span style={{color:"var(--text3)",marginLeft:"auto"}}>↗</span>
                 </a>
                 <a href="https://github.com" target="_blank" rel="noreferrer" className="c-link">
-                  <div className="c-link-icon"><Github size={16} /></div>
+                  <div className="c-link-icon"><GithubLogo size={16} /></div>
                   <div>
                     <div className="c-link-lbl">GitHub</div>
                     <div className="c-link-val">github.com/abhyodhya</div>
+                  </div>
+                  <span style={{color:"var(--text3)",marginLeft:"auto"}}>↗</span>
+                </a>
+                <a href="https://instagram.com/abhyodhya" target="_blank" rel="noreferrer" className="c-link">
+                  <div className="c-link-icon"><InstagramLogo size={16} /></div>
+                  <div>
+                    <div className="c-link-lbl">Instagram</div>
+                    <div className="c-link-val">instagram.com/abhyodhya</div>
                   </div>
                   <span style={{color:"var(--text3)",marginLeft:"auto"}}>↗</span>
                 </a>
@@ -1202,9 +1223,10 @@ export default function Portfolio() {
           <a href="#hero" className="footer-logo">Abhyodhya<em>.</em></a>
           <p className="footer-copy">© 2026 Abhyodhya Kumar · Built with React &amp; passion</p>
           <div className="footer-soc">
-            <a href="https://github.com" target="_blank" rel="noreferrer" className="fsoc" title="GitHub"><Github size={16} /></a>
-            <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="fsoc" title="LinkedIn"><Linkedin size={16} /></a>
-            <a href="mailto:abhyodhyaoff2344@gmail.com" className="fsoc" title="Email"><Mail size={16} /></a>
+            <a href="https://github.com" target="_blank" rel="noreferrer" className="fsoc" title="GitHub"><GithubLogo size={16} /></a>
+            <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="fsoc" title="LinkedIn"><LinkedinLogo size={16} /></a>
+            <a href="https://instagram.com/abhyodhya" target="_blank" rel="noreferrer" className="fsoc" title="Instagram"><InstagramLogo size={16} /></a>
+            <a href="mailto:abhyodhyaoff2344@gmail.com" className="fsoc" title="Email"><EnvelopeSimple size={16} /></a>
             <a href="tel:+919430576250" className="fsoc" title="Phone"><Phone size={16} /></a>
           </div>
         </div>
