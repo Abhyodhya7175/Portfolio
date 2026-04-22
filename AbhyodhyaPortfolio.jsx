@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { animate, createTimeline, remove, set, stagger } from "animejs";
 import emailjs from "@emailjs/browser";
+import { Award, BarChart3, CloudSun, Github, Handshake, Linkedin, Mail, Phone, Shield, Target, Zap } from "lucide-react";
 
 /* ─── GLOBAL STYLES ─────────────────────────────────────── */
 const GlobalStyles = () => (
@@ -73,9 +74,15 @@ const GlobalStyles = () => (
       transition:background var(--ease);
     }
     .nav-logo {
+      display:inline-flex; align-items:center; gap:10px;
       font-family:var(--ff-head); font-size:22px; font-weight:700;
       color:var(--text); text-decoration:none; letter-spacing:-0.5px;
     }
+    .nav-logo-icon {
+      width:40px; height:40px; border-radius:8px; object-fit:cover;
+      flex-shrink:0; display:block;
+    }
+    .nav-logo-text { line-height:1; }
     .nav-logo em { color:var(--cyan); font-style:normal; }
     .nav-links { display:flex; gap:32px; list-style:none; }
     .nav-links a {
@@ -247,7 +254,10 @@ const GlobalStyles = () => (
       border-radius:var(--r-sm); transition:border-color var(--ease), transform var(--ease);
     }
     .vcard:hover { border-color:var(--cyan); transform:translateX(5px); }
-    .vcard-icon { font-size:20px; flex-shrink:0; margin-top:1px; }
+    .vcard-icon {
+      width:24px; height:24px; display:flex; align-items:center; justify-content:center;
+      color:var(--cyan); flex-shrink:0; margin-top:1px;
+    }
     .vcard-title { font-family:var(--ff-head); font-size:14px; font-weight:600; margin-bottom:3px; }
     .vcard-desc { font-size:13px; color:var(--text2); line-height:1.6; }
 
@@ -379,7 +389,8 @@ const GlobalStyles = () => (
     .c-link:hover { border-color:var(--cyan); transform:translateX(4px); }
     .c-link-icon {
       width:36px; height:36px; background:var(--bg2); border-radius:9px;
-      display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0;
+      display:flex; align-items:center; justify-content:center; flex-shrink:0;
+      color:var(--cyan);
     }
     .c-link-lbl { font-size:10.5px; color:var(--text3); letter-spacing:.5px; text-transform:uppercase; }
     .c-link-val { font-weight:600; color:var(--text); font-size:14px; }
@@ -410,9 +421,10 @@ const GlobalStyles = () => (
     .fsoc {
       width:35px; height:35px; background:var(--surface); border:1px solid var(--border);
       border-radius:8px; display:flex; align-items:center; justify-content:center;
-      text-decoration:none; font-size:14px; color:var(--text2);
+      text-decoration:none; color:var(--text2);
       transition:all var(--ease);
     }
+    .fsoc svg, .c-link-icon svg, .vcard-icon svg { width:16px; height:16px; }
     .fsoc:hover { background:var(--cyan); color:#07080d; border-color:transparent; transform:translateY(-2px); }
 
     /* ── reveal ── */
@@ -481,7 +493,7 @@ function useSkillAnim() {
 /* ─── DATA ───────────────────────────────────────────────── */
 const PROJECTS = [
   {
-    icon: "🌤️",
+    icon: <CloudSun size={20} />,
     iconBg: "linear-gradient(135deg,#00e5cc22,#4af3e022)",
     title: "Weather App",
     desc: "A live weather dashboard fetching real-time data via the OpenWeather API. Features clean state management, dynamic UI updates per city, and structured API response handling.",
@@ -489,7 +501,7 @@ const PROJECTS = [
     github: "#", live: "#",
   },
   {
-    icon: "🎯",
+    icon: <Target size={20} />,
     iconBg: "linear-gradient(135deg,#ffb34722,#ff9a3c22)",
     title: "TalentPulse",
     desc: "Full-stack AI-powered career portal with multi-role architecture (Students, Recruiters, Admins). Features gamified profile completion with dynamic progress bars to boost data quality.",
@@ -497,7 +509,7 @@ const PROJECTS = [
     github: "#", live: "#",
   },
   {
-    icon: "🏥",
+    icon: <Shield size={20} />,
     iconBg: "linear-gradient(135deg,#ff6b8a22,#ff8c6922)",
     title: "Preventive Healthcare System",
     desc: "Early risk assessment platform developed during Ignithon hackathon at KIIT. Conducts health screenings and identifies at-risk users through structured data collection.",
@@ -850,7 +862,14 @@ export default function Portfolio() {
 
       {/* ── NAV ── */}
       <nav>
-        <a href="#hero" className="nav-logo">Abhyodhya<em>.</em></a>
+        <a href="#hero" className="nav-logo">
+          <img
+            src="https://cdn.colorexpertsbd.com/wp-content/uploads/2018/05/011_1.jpg"
+            alt="Logo"
+            className="nav-logo-icon"
+          />
+          <span className="nav-logo-text">Abhyodhya<em>.</em></span>
+        </a>
         <ul className="nav-links">
           {["about","skills","projects","experience","contact"].map(s => (
             <li key={s}><a href={`#${s}`}>{s.charAt(0).toUpperCase()+s.slice(1)}</a></li>
@@ -944,10 +963,10 @@ export default function Portfolio() {
             </div>
             <div className="value-cards">
               {[
-                { icon:"⚡", title:"Fast Learner", desc:"97% on Meta's Front-End certificate. I absorb new technologies quickly and apply them in real projects." },
-                { icon:"🎯", title:"Problem Solver", desc:"DSA-trained thinking combined with hands-on hackathon experience. I tackle hard problems systematically." },
-                { icon:"📊", title:"Data Driven", desc:"Proficient in statistical analysis and visualization with Python, Pandas, Numpy, and Tableau." },
-                { icon:"🤝", title:"Team Player", desc:"Proven collaboration through multi-day hackathons. I design workflows and help teammates ship." },
+                { icon:<Zap size={18} />, title:"Fast Learner", desc:"97% on Meta's Front-End certificate. I absorb new technologies quickly and apply them in real projects." },
+                { icon:<Target size={18} />, title:"Problem Solver", desc:"DSA-trained thinking combined with hands-on hackathon experience. I tackle hard problems systematically." },
+                { icon:<BarChart3 size={18} />, title:"Data Driven", desc:"Proficient in statistical analysis and visualization with Python, Pandas, Numpy, and Tableau." },
+                { icon:<Handshake size={18} />, title:"Team Player", desc:"Proven collaboration through multi-day hackathons. I design workflows and help teammates ship." },
               ].map((v, i) => (
                 <RevealDiv key={v.title} className="vcard" delay={`d${i}`}>
                   <div className="vcard-icon">{v.icon}</div>
@@ -1042,7 +1061,7 @@ export default function Portfolio() {
                       <div className="tl-title">{e.title}</div>
                       <div className="tl-org">{e.org}</div>
                       <div className="tl-desc">{e.desc}</div>
-                      <div className="tl-pct">🏆 {e.pct}</div>
+                      <div className="tl-pct"><Award size={13} /> {e.pct}</div>
                     </div>
                   </div>
                 ))}
@@ -1101,7 +1120,7 @@ export default function Portfolio() {
               </p>
               <div className="c-links">
                 <a href="mailto:abhyodhyaoff2344@gmail.com" className="c-link">
-                  <div className="c-link-icon">✉️</div>
+                  <div className="c-link-icon"><Mail size={16} /></div>
                   <div>
                     <div className="c-link-lbl">Email</div>
                     <div className="c-link-val">abhyodhyaoff2344@gmail.com</div>
@@ -1109,7 +1128,7 @@ export default function Portfolio() {
                   <span style={{color:"var(--text3)",marginLeft:"auto"}}>↗</span>
                 </a>
                 <a href="tel:+919430576250" className="c-link">
-                  <div className="c-link-icon">📱</div>
+                  <div className="c-link-icon"><Phone size={16} /></div>
                   <div>
                     <div className="c-link-lbl">Phone</div>
                     <div className="c-link-val">+91 9430576250</div>
@@ -1117,7 +1136,7 @@ export default function Portfolio() {
                   <span style={{color:"var(--text3)",marginLeft:"auto"}}>↗</span>
                 </a>
                 <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="c-link">
-                  <div className="c-link-icon">💼</div>
+                  <div className="c-link-icon"><Linkedin size={16} /></div>
                   <div>
                     <div className="c-link-lbl">LinkedIn</div>
                     <div className="c-link-val">linkedin.com/in/abhyodhya</div>
@@ -1125,7 +1144,7 @@ export default function Portfolio() {
                   <span style={{color:"var(--text3)",marginLeft:"auto"}}>↗</span>
                 </a>
                 <a href="https://github.com" target="_blank" rel="noreferrer" className="c-link">
-                  <div className="c-link-icon">🐙</div>
+                  <div className="c-link-icon"><Github size={16} /></div>
                   <div>
                     <div className="c-link-lbl">GitHub</div>
                     <div className="c-link-val">github.com/abhyodhya</div>
@@ -1183,10 +1202,10 @@ export default function Portfolio() {
           <a href="#hero" className="footer-logo">Abhyodhya<em>.</em></a>
           <p className="footer-copy">© 2026 Abhyodhya Kumar · Built with React &amp; passion</p>
           <div className="footer-soc">
-            <a href="https://github.com" target="_blank" rel="noreferrer" className="fsoc" title="GitHub">🐙</a>
-            <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="fsoc" title="LinkedIn">💼</a>
-            <a href="mailto:abhyodhyaoff2344@gmail.com" className="fsoc" title="Email">✉️</a>
-            <a href="tel:+919430576250" className="fsoc" title="Phone">📱</a>
+            <a href="https://github.com" target="_blank" rel="noreferrer" className="fsoc" title="GitHub"><Github size={16} /></a>
+            <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="fsoc" title="LinkedIn"><Linkedin size={16} /></a>
+            <a href="mailto:abhyodhyaoff2344@gmail.com" className="fsoc" title="Email"><Mail size={16} /></a>
+            <a href="tel:+919430576250" className="fsoc" title="Phone"><Phone size={16} /></a>
           </div>
         </div>
       </footer>
