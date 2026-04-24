@@ -43,6 +43,97 @@ const GlobalStyles = () => (
       overflow-x: hidden;
     }
 
+    /* custom cursor */
+    .cursor-shell {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      pointer-events: none;
+      z-index: 1200;
+      opacity: 0;
+      transition: opacity .24s ease;
+      mix-blend-mode: screen;
+    }
+    .cursor-shell.visible { opacity: 1; }
+    .cursor-ring,
+    .cursor-dot,
+    .cursor-label {
+      position: absolute;
+      left: 0;
+      top: 0;
+      transform: translate3d(-50%, -50%, 0);
+      pointer-events: none;
+      will-change: transform, opacity;
+    }
+    .cursor-ring {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 1px solid rgba(0, 229, 204, .62);
+      background: radial-gradient(circle, rgba(0,229,204,.16), rgba(0,229,204,0) 68%);
+      box-shadow: 0 0 22px rgba(0,229,204,.3);
+      transition: transform .26s cubic-bezier(.4,0,.2,1), border-color .24s ease, background .24s ease;
+    }
+    .cursor-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 14px rgba(0,229,204,.65);
+      transition: transform .22s cubic-bezier(.4,0,.2,1), opacity .2s ease;
+    }
+    .cursor-label {
+      font-family: var(--ff-head);
+      font-size: 10px;
+      letter-spacing: 1.3px;
+      text-transform: uppercase;
+      color: #0b121c;
+      background: rgba(0, 229, 204, .92);
+      border-radius: 100px;
+      padding: 5px 10px;
+      transform: translate3d(14px, 14px, 0) scale(.8);
+      opacity: 0;
+      transition: opacity .2s ease, transform .24s cubic-bezier(.4,0,.2,1);
+      white-space: nowrap;
+    }
+
+    .cursor-shell.variant-link .cursor-ring {
+      transform: translate3d(-50%, -50%, 0) scale(1.45);
+      border-color: rgba(255,255,255,.82);
+      background: radial-gradient(circle, rgba(255,255,255,.22), rgba(255,255,255,0) 74%);
+    }
+    .cursor-shell.variant-link .cursor-dot {
+      transform: translate3d(-50%, -50%, 0) scale(.65);
+    }
+    .cursor-shell.variant-cta .cursor-ring {
+      transform: translate3d(-50%, -50%, 0) scale(1.7);
+      border-color: rgba(255,179,71,.86);
+      background: radial-gradient(circle, rgba(255,179,71,.24), rgba(255,179,71,0) 74%);
+      box-shadow: 0 0 26px rgba(255,179,71,.33);
+    }
+    .cursor-shell.variant-card .cursor-ring {
+      transform: translate3d(-50%, -50%, 0) scale(1.95);
+      border-color: rgba(0,229,204,.42);
+      background: radial-gradient(circle, rgba(0,229,204,.12), rgba(0,229,204,0) 72%);
+    }
+    .cursor-shell.variant-text .cursor-ring {
+      transform: translate3d(-50%, -50%, 0) scale(1.14);
+      border-color: rgba(255,255,255,.7);
+      background: radial-gradient(circle, rgba(255,255,255,.18), rgba(255,255,255,0) 65%);
+    }
+    .cursor-shell.has-label .cursor-label {
+      opacity: 1;
+      transform: translate3d(16px, 16px, 0) scale(1);
+    }
+    .cursor-shell.is-pressed .cursor-ring {
+      transform: translate3d(-50%, -50%, 0) scale(.85);
+    }
+    .cursor-shell.is-pressed .cursor-dot {
+      transform: translate3d(-50%, -50%, 0) scale(1.5);
+    }
+
     /* scrollbar */
     ::-webkit-scrollbar { width: 3px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
@@ -329,6 +420,42 @@ const GlobalStyles = () => (
     .proj-desc { font-size:13.5px; color:var(--text2); line-height:1.75; margin-bottom:22px; }
     .proj-stack { display:flex; gap:7px; flex-wrap:wrap; }
     .stk-tag { padding:4px 10px; background:var(--bg); border:1px solid var(--border); border-radius:6px; font-size:11px; color:var(--text3); font-weight:500; }
+    .proj-actions { display:flex; align-items:center; justify-content:flex-start; gap:10px; margin-top:22px; }
+    .proj-details-btn {
+      border:1px solid var(--border); background:var(--bg2); color:var(--text);
+      border-radius:100px; padding:9px 14px; font-size:12.5px; font-weight:600;
+      cursor:pointer; transition:all var(--ease);
+    }
+    .proj-details-btn:hover { border-color:var(--cyan); color:var(--cyan); transform:translateY(-1px); }
+    .proj-details-btn.active {
+      border-color:var(--cyan);
+      color:var(--cyan);
+      background:rgba(0,229,204,0.06);
+    }
+    .proj-details-panel {
+      margin-top:14px; background:var(--bg2); border:1px solid var(--border);
+      border-radius:14px; max-height:0; overflow:hidden; opacity:0;
+      transform:translateY(-4px); padding:0 14px;
+      transition:max-height .48s cubic-bezier(.4,0,.2,1), opacity .3s ease, transform .3s ease, padding .3s ease;
+    }
+    .proj-details-panel.open {
+      max-height:540px; opacity:1; transform:translateY(0); padding:14px;
+    }
+    .proj-details-summary { color:var(--text2); font-size:13.5px; line-height:1.75; margin-bottom:10px; }
+    .project-detail-box {
+      background:var(--bg2); border:1px solid var(--border); border-radius:14px;
+      padding:16px 16px 14px; margin-bottom:12px;
+    }
+    .project-detail-label {
+      font-size:11px; color:var(--cyan); letter-spacing:1.2px; font-weight:700;
+      text-transform:uppercase; margin-bottom:7px;
+    }
+    .project-detail-copy { font-size:13.5px; color:var(--text2); line-height:1.75; }
+    .project-inline-points { margin-top:12px; display:grid; gap:8px; }
+    .project-inline-point {
+      background:var(--bg); border:1px solid var(--border); border-radius:10px;
+      padding:8px 11px; font-size:12.5px; color:var(--text2);
+    }
 
     /* ── certs ── */
     .cert-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-top:52px; }
@@ -451,6 +578,33 @@ const GlobalStyles = () => (
       footer { padding:28px 20px; }
       .footer-in { flex-direction:column; align-items:flex-start; }
     }
+
+    @media (hover: hover) and (pointer: fine) {
+      body,
+      a,
+      button,
+      input,
+      textarea,
+      .proj-card,
+      .sk-cat,
+      .cert-card,
+      .vcard,
+      .c-link,
+      .fsoc,
+      .hero-card {
+        cursor: none;
+      }
+    }
+
+    @media (hover: none), (pointer: coarse) {
+      .cursor-shell { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .cursor-ring,
+      .cursor-dot,
+      .cursor-label { transition: none; }
+    }
   `}</style>
 );
 
@@ -498,6 +652,16 @@ const PROJECTS = [
     title: "Weather App",
     desc: "A live weather dashboard fetching real-time data via the OpenWeather API. Features clean state management, dynamic UI updates per city, and structured API response handling.",
     stack: ["React.js", "HTML", "CSS", "OpenWeather API"],
+    details: {
+      summary: "Built to solve unreliable and cluttered weather interfaces by delivering clear, location-specific information with predictable states.",
+      challenge: "API responses were inconsistent between valid cities, unknown locations, and rate-limited calls. Without guardrails, users saw empty sections and confusing transitions while data was loading.",
+      solution: "Created a strict fetch lifecycle with loading, success, and failure states. Normalized API payloads before rendering and added resilient fallbacks for unknown city inputs.",
+      impact: [
+        "Reduced UI flicker by rendering only normalized response models.",
+        "Made failures understandable with actionable error messages.",
+        "Improved usability by aligning city search, units, and refresh flow.",
+      ],
+    },
     github: "#", live: "#",
   },
   {
@@ -506,6 +670,16 @@ const PROJECTS = [
     title: "TalentPulse",
     desc: "Full-stack AI-powered career portal with multi-role architecture (Students, Recruiters, Admins). Features gamified profile completion with dynamic progress bars to boost data quality.",
     stack: ["React.js", "Tailwind CSS", "Full Stack", "AI/ML"],
+    details: {
+      summary: "Designed to fix low-quality candidate profiles and disconnected hiring workflows across students, recruiters, and admins.",
+      challenge: "Different users needed different permissions and journeys, but the core profile data had to stay consistent. In early versions, missing profile fields caused recruiter drop-offs and weak matching outcomes.",
+      solution: "Implemented role-aware UI flows and a profile completeness engine that highlights blockers. Added progress-driven nudges and validation checkpoints before profile publishing.",
+      impact: [
+        "Increased profile data completeness through visible progress milestones.",
+        "Reduced recruiter friction with cleaner, standardized candidate cards.",
+        "Enabled safer administration via explicit multi-role boundaries.",
+      ],
+    },
     github: "#", live: "#",
   },
   {
@@ -514,6 +688,16 @@ const PROJECTS = [
     title: "Preventive Healthcare System",
     desc: "Early risk assessment platform developed during Ignithon hackathon at KIIT. Conducts health screenings and identifies at-risk users through structured data collection.",
     stack: ["Python", "Data Analysis", "Healthcare", "Team Project"],
+    details: {
+      summary: "Created to move from reactive care to early risk flagging using fast, structured screening signals.",
+      challenge: "Healthcare inputs were noisy and came from users with varied medical literacy. The system needed to produce understandable risk outputs quickly without oversimplifying sensitive cases.",
+      solution: "Defined a guided questionnaire pipeline with strict field validation, weighted indicators, and transparent risk bands. Focused on explainable outputs so non-technical users could understand next steps.",
+      impact: [
+        "Delivered quick preliminary risk categorization for hackathon demos.",
+        "Improved trust with explainable factors behind each risk score.",
+        "Created a reusable screening workflow for future iterations.",
+      ],
+    },
     github: "#", live: "#",
   },
 ];
@@ -647,10 +831,129 @@ function RevealDiv({ className, children, delay = "" }) {
   );
 }
 
+function CustomCursor() {
+  const shellRef = useRef(null);
+  const labelRef = useRef(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const supportsFinePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    if (!supportsFinePointer) return;
+
+    const shell = shellRef.current;
+    if (!shell) return;
+
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const pos = { x: window.innerWidth * 0.5, y: window.innerHeight * 0.5 };
+    const target = { ...pos };
+    const speed = reduceMotion ? 1 : 0.18;
+    let raf = 0;
+
+    const setVariantFromElement = (el) => {
+      shell.classList.remove("variant-link", "variant-cta", "variant-card", "variant-text", "has-label");
+      if (labelRef.current) labelRef.current.textContent = "";
+
+      if (!el) return;
+
+      let variant = "";
+      let label = el.getAttribute("data-cursor-label") || "";
+
+      if (el.matches("input, textarea")) {
+        variant = "variant-text";
+        label = label || "Type";
+      } else if (el.matches(".btn-primary, .nav-cta")) {
+        variant = "variant-cta";
+        label = label || "Go";
+      } else if (el.matches(".proj-card, .sk-cat, .cert-card, .vcard, .c-link, .hero-card")) {
+        variant = "variant-card";
+        label = label || "Explore";
+      } else if (el.matches("a, button, .fsoc, .proj-link, .proj-details-btn, .hamburger")) {
+        variant = "variant-link";
+        label = label || "Open";
+      }
+
+      if (variant) shell.classList.add(variant);
+      if (label) {
+        if (labelRef.current) labelRef.current.textContent = label;
+        shell.classList.add("has-label");
+      }
+    };
+
+    const tick = () => {
+      pos.x += (target.x - pos.x) * speed;
+      pos.y += (target.y - pos.y) * speed;
+      shell.style.transform = `translate3d(${pos.x}px, ${pos.y}px, 0)`;
+      raf = requestAnimationFrame(tick);
+    };
+
+    const onPointerMove = (event) => {
+      target.x = event.clientX;
+      target.y = event.clientY;
+      if (!shell.classList.contains("visible")) shell.classList.add("visible");
+    };
+
+    const onPointerDown = () => shell.classList.add("is-pressed");
+    const onPointerUp = () => shell.classList.remove("is-pressed");
+
+    const onPointerOver = (event) => {
+      const interactive = event.target.closest(
+        "[data-cursor-label], .btn-primary, .nav-cta, .proj-card, .sk-cat, .cert-card, .vcard, .c-link, .hero-card, a, button, input, textarea, .fsoc, .proj-link, .proj-details-btn, .hamburger"
+      );
+      setVariantFromElement(interactive);
+    };
+
+    const onPointerOut = (event) => {
+      const toElement = event.relatedTarget;
+      if (toElement && toElement.closest) {
+        const nextInteractive = toElement.closest(
+          "[data-cursor-label], .btn-primary, .nav-cta, .proj-card, .sk-cat, .cert-card, .vcard, .c-link, .hero-card, a, button, input, textarea, .fsoc, .proj-link, .proj-details-btn, .hamburger"
+        );
+        setVariantFromElement(nextInteractive);
+        return;
+      }
+      setVariantFromElement(null);
+    };
+
+    const onPointerLeaveWindow = () => {
+      shell.classList.remove("visible", "is-pressed", "variant-link", "variant-cta", "variant-card", "variant-text", "has-label");
+      if (labelRef.current) labelRef.current.textContent = "";
+    };
+
+    document.addEventListener("pointermove", onPointerMove, { passive: true });
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("pointerup", onPointerUp);
+    document.addEventListener("pointerover", onPointerOver);
+    document.addEventListener("pointerout", onPointerOut);
+    document.addEventListener("mouseleave", onPointerLeaveWindow);
+    raf = requestAnimationFrame(tick);
+
+    return () => {
+      document.removeEventListener("pointermove", onPointerMove);
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("pointerup", onPointerUp);
+      document.removeEventListener("pointerover", onPointerOver);
+      document.removeEventListener("pointerout", onPointerOut);
+      document.removeEventListener("mouseleave", onPointerLeaveWindow);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  return (
+    <div className="cursor-shell" ref={shellRef} aria-hidden="true">
+      <div className="cursor-ring" />
+      <div className="cursor-dot" />
+      <div className="cursor-label" ref={labelRef} />
+    </div>
+  );
+}
+
 /* ─── MAIN COMPONENT ─────────────────────────────────────── */
 export default function Portfolio() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [formState, setFormState] = useState("idle"); // idle | sending | sent | error
+  const [expandedProject, setExpandedProject] = useState(null);
 
   useEffect(() => {
     const supportsObserver = typeof window !== "undefined" && "IntersectionObserver" in window;
@@ -813,6 +1116,17 @@ export default function Portfolio() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!expandedProject) return;
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") setExpandedProject(null);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [expandedProject]);
+
   function closeMenu() { setMenuOpen(false); }
 
   async function handleSubmit(e) {
@@ -857,6 +1171,7 @@ export default function Portfolio() {
   return (
     <>
       <GlobalStyles />
+      <CustomCursor />
 
       <div className="page-shell">
 
@@ -1016,7 +1331,9 @@ export default function Portfolio() {
             <a href="https://github.com" target="_blank" rel="noreferrer" className="btn-outline">GitHub Profile →</a>
           </div>
           <div className="proj-grid">
-            {PROJECTS.map((p, i) => (
+            {PROJECTS.map((p, i) => {
+              const isExpanded = expandedProject === p.title;
+              return (
               <RevealDiv key={p.title} className="proj-card" delay={`d${i % 3}`}>
                 <div className="proj-top">
                   <div className="proj-icon" style={{background:p.iconBg}}>{p.icon}</div>
@@ -1030,8 +1347,39 @@ export default function Portfolio() {
                 <div className="proj-stack">
                   {p.stack.map(t => <span key={t} className="stk-tag">{t}</span>)}
                 </div>
+                <div className="proj-actions">
+                  <button
+                    type="button"
+                    className={`proj-details-btn ${isExpanded ? "active" : ""}`}
+                    onClick={() => setExpandedProject(isExpanded ? null : p.title)}
+                    aria-expanded={isExpanded}
+                    aria-label={`Toggle details for ${p.title}`}
+                  >
+                    {isExpanded ? "Hide Details" : "View Details"}
+                  </button>
+                </div>
+                <div className={`proj-details-panel ${isExpanded ? "open" : ""}`}>
+                  <div className="proj-details-summary">{p.details.summary}</div>
+
+                  <div className="project-detail-box">
+                    <div className="project-detail-label">Challenge</div>
+                    <div className="project-detail-copy">{p.details.challenge}</div>
+                  </div>
+
+                  <div className="project-detail-box">
+                    <div className="project-detail-label">How I Solved It</div>
+                    <div className="project-detail-copy">{p.details.solution}</div>
+                  </div>
+
+                  <div className="project-detail-label" style={{ marginTop: 8 }}>Key Outcomes</div>
+                  <div className="project-inline-points">
+                    {p.details.impact.map((point) => (
+                      <div key={point} className="project-inline-point">{point}</div>
+                    ))}
+                  </div>
+                </div>
               </RevealDiv>
-            ))}
+            );})}
           </div>
         </div>
       </section>
