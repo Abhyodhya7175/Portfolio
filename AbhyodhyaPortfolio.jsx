@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { animate, createTimeline, remove, set, stagger } from "animejs";
 import emailjs from "@emailjs/browser";
-import { ChartBar, CloudSun, EnvelopeSimple, GithubLogo, Handshake, InstagramLogo, Lightning, LinkedinLogo, Phone, ShieldCheck, Target, Trophy } from "phosphor-react";
+import { ChartBar, CloudSun, EnvelopeSimple, GithubLogo, Handshake, InstagramLogo, Lightning, LinkedinLogo, Moon, Phone, ShieldCheck, Sun, Target, Trophy } from "phosphor-react";
 
 /* ─── GLOBAL STYLES ─────────────────────────────────────── */
 const GlobalStyles = () => (
@@ -16,6 +16,7 @@ const GlobalStyles = () => (
       --bg3:      #131623;
       --surface:  #181b28;
       --surface2: #1e2133;
+      --nav-bg:   rgba(7,8,13,0.82);
       --border:   rgba(255,255,255,0.07);
       --text:     #eeeef8;
       --text2:    #8888aa;
@@ -23,6 +24,8 @@ const GlobalStyles = () => (
       --cyan:     #00e5cc;
       --cyan2:    #00bfae;
       --cyan-glow:rgba(0,229,204,0.18);
+      --grid-line:rgba(0,229,204,0.04);
+      --accent-contrast:#07080d;
       --amber:    #ffb347;
       --rose:     #ff6b8a;
       --ff-head:  'Clash Display', sans-serif;
@@ -32,7 +35,28 @@ const GlobalStyles = () => (
       --ease:     0.35s cubic-bezier(0.4,0,0.2,1);
     }
 
-    html { scroll-behavior: smooth; scroll-padding-top: 76px; }
+    :root[data-theme="light"] {
+      --bg:       #f7fafc;
+      --bg2:      #edf3f8;
+      --bg3:      #e6eef6;
+      --surface:  #ffffff;
+      --surface2: #f1f6fb;
+      --nav-bg:   rgba(255,255,255,0.86);
+      --border:   rgba(15,23,42,0.12);
+      --text:     #111827;
+      --text2:    #475569;
+      --text3:    #7c8797;
+      --cyan:     #007f73;
+      --cyan2:    #006a61;
+      --cyan-glow:rgba(0,127,115,0.16);
+      --grid-line:rgba(0,127,115,0.09);
+      --accent-contrast:#ffffff;
+      --amber:    #b85d00;
+      --rose:     #c8325b;
+    }
+
+    html { scroll-behavior: smooth; scroll-padding-top: 76px; color-scheme: dark; }
+    :root[data-theme="light"] { color-scheme: light; }
 
     body {
       background: var(--bg);
@@ -149,33 +173,35 @@ const GlobalStyles = () => (
     /* grid bg pattern */
     .grid-bg {
       background-image:
-        linear-gradient(rgba(0,229,204,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,229,204,0.04) 1px, transparent 1px);
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
       background-size: 40px 40px;
     }
 
     /* ── nav ── */
     nav {
       position:fixed; top:0; left:0; right:0; z-index:100;
-      display:flex; align-items:center; justify-content:space-between;
-      padding:18px 48px;
-      background:rgba(7,8,13,0.82);
+      display:grid; align-items:center; grid-template-columns:max-content 1fr max-content;
+      gap:30px;
+      padding:14px 36px;
+      background:var(--nav-bg);
       backdrop-filter:blur(20px);
       border-bottom:1px solid var(--border);
       transition:background var(--ease);
     }
     .nav-logo {
       display:inline-flex; align-items:center; gap:10px;
-      font-family:var(--ff-head); font-size:22px; font-weight:700;
+      font-family:var(--ff-head); font-size:20px; font-weight:700;
       color:var(--text); text-decoration:none; letter-spacing:-0.5px;
+      min-width:max-content;
     }
     .nav-logo-icon {
-      width:40px; height:40px; border-radius:8px; object-fit:cover;
+      width:36px; height:36px; border-radius:8px; object-fit:cover;
       flex-shrink:0; display:block;
     }
     .nav-logo-text { line-height:1; }
     .nav-logo em { color:var(--cyan); font-style:normal; }
-    .nav-links { display:flex; gap:32px; list-style:none; }
+    .nav-links { display:flex; justify-content:center; gap:24px; list-style:none; min-width:0; }
     .nav-links a {
       text-decoration:none; color:var(--text2); font-size:13.5px;
       font-weight:500; letter-spacing:.3px;
@@ -189,14 +215,31 @@ const GlobalStyles = () => (
     }
     .nav-links a:hover { color:var(--text); }
     .nav-links a:hover::after { width:100%; }
+    .nav-actions { display:flex; align-items:center; justify-content:flex-end; gap:10px; min-width:max-content; }
     .nav-cta {
-      padding:9px 22px; background:var(--cyan); color:#07080d;
+      min-height:46px; padding:0 18px; background:var(--cyan); color:var(--accent-contrast);
       border-radius:100px; font-size:13px; font-weight:700;
       text-decoration:none; letter-spacing:.3px;
+      display:inline-flex; align-items:center; justify-content:center; white-space:nowrap; line-height:1;
       transition:all var(--ease);
       box-shadow:0 0 24px var(--cyan-glow);
     }
     .nav-cta:hover { opacity:.88; transform:translateY(-1px); box-shadow:0 4px 32px var(--cyan-glow); }
+    .theme-toggle {
+      width:40px; height:40px; border-radius:50%;
+      border:1px solid var(--border); background:var(--surface);
+      color:var(--text); display:inline-flex; align-items:center; justify-content:center;
+      cursor:pointer; transition:background var(--ease), border-color var(--ease), color var(--ease), transform var(--ease), box-shadow var(--ease);
+      box-shadow:0 8px 24px rgba(0,0,0,.08);
+    }
+    .theme-toggle:hover {
+      border-color:var(--cyan); color:var(--cyan); transform:translateY(-1px);
+      box-shadow:0 8px 28px var(--cyan-glow);
+    }
+    .theme-toggle:focus-visible {
+      outline:2px solid var(--cyan);
+      outline-offset:3px;
+    }
 
     /* hamburger */
     .hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none; }
@@ -278,7 +321,7 @@ const GlobalStyles = () => (
       animation:fadeUp .55s ease forwards; animation-delay:.5s; opacity:0;
     }
     .btn-primary {
-      padding:14px 28px; background:var(--cyan); color:#07080d;
+      padding:14px 28px; background:var(--cyan); color:var(--accent-contrast);
       border-radius:100px; font-size:14.5px; font-weight:700;
       text-decoration:none; cursor:pointer; border:none;
       transition:all var(--ease); display:inline-flex; align-items:center; gap:8px;
@@ -307,7 +350,7 @@ const GlobalStyles = () => (
       width:68px; height:68px; border-radius:50%;
       background:linear-gradient(135deg,var(--cyan),var(--amber));
       display:flex; align-items:center; justify-content:center;
-      font-size:26px; margin-bottom:18px; font-weight:700; color:#07080d;
+      font-size:26px; margin-bottom:18px; font-weight:700; color:var(--accent-contrast);
       font-family:var(--ff-head);
     }
     .card-name { font-family:var(--ff-head); font-size:20px; font-weight:700; letter-spacing:-.5px; margin-bottom:3px; }
@@ -357,7 +400,7 @@ const GlobalStyles = () => (
     .skills-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:22px; margin-top:56px; }
     .sk-cat {
       background:var(--surface); border:1px solid var(--border);
-      border-radius:var(--r); padding:30px; position:relative; overflow:hidden;
+      border-radius:var(--r); padding:30px; position:relative; overflow:visible;
       transition:transform var(--ease), border-color var(--ease);
     }
     .sk-cat::after {
@@ -371,21 +414,50 @@ const GlobalStyles = () => (
     .sk-cat:hover::after { opacity:1; }
     .sk-cat-title { font-family:var(--ff-head); font-size:17px; font-weight:700; margin-bottom:4px; }
     .sk-cat-sub { font-size:12.5px; color:var(--text3); margin-bottom:26px; }
-    .sk-list { display:flex; flex-direction:column; gap:14px; }
-    .sk-item {}
-    .sk-info { display:flex; justify-content:space-between; margin-bottom:7px; }
-    .sk-name { font-size:13.5px; font-weight:500; color:var(--text); }
-    .sk-pct { font-size:11.5px; color:var(--text3); font-weight:500; }
-    .sk-bar { height:3.5px; background:var(--bg); border-radius:100px; overflow:hidden; }
-    .sk-fill {
-      height:100%; border-radius:100px;
-      transform:scaleX(0); transform-origin:left;
-      transition:transform 1.1s cubic-bezier(.4,0,.2,1);
+    .sk-list { display:flex; flex-direction:column; gap:10px; }
+    .sk-item {
+      width:100%; position:relative; display:grid; grid-template-columns:34px 1fr; gap:12px; align-items:start;
+      padding:13px 14px; margin:0; border:1px solid var(--border);
+      border-radius:12px; background:var(--bg2); color:inherit; text-align:left;
+      font-family:var(--ff-body); cursor:pointer;
+      transition:background var(--ease), border-color var(--ease), transform var(--ease), box-shadow var(--ease);
     }
-    .sk-fill.on { transform:scaleX(1); }
-    .sk-cat.fe .sk-fill { background:linear-gradient(90deg,var(--cyan),#4af3e0); }
-    .sk-cat.be .sk-fill { background:linear-gradient(90deg,var(--amber),#ffd47a); }
-    .sk-cat.tl .sk-fill { background:linear-gradient(90deg,var(--rose),#ff8c69); }
+    .sk-item:hover,
+    .sk-item:focus-visible {
+      background:var(--surface2);
+      border-color:var(--cyan);
+      transform:translateY(-2px);
+      box-shadow:0 12px 26px rgba(0,0,0,.12);
+      outline:none;
+    }
+    .sk-sigil {
+      width:34px; height:34px; border-radius:10px;
+      display:flex; align-items:center; justify-content:center;
+      background:var(--surface); border:1px solid var(--border);
+      color:var(--cyan); flex-shrink:0;
+    }
+    .sk-sigil::before {
+      content:''; width:9px; height:9px; border-radius:50%;
+      background:currentColor; box-shadow:0 0 14px currentColor;
+    }
+    .sk-cat.be .sk-sigil { color:var(--amber); }
+    .sk-cat.tl .sk-sigil { color:var(--rose); }
+    .sk-copy { min-width:0; }
+    .sk-info { display:flex; justify-content:space-between; align-items:center; gap:10px; }
+    .sk-name { font-size:14px; font-weight:700; color:var(--text); line-height:1.25; }
+    .sk-tag {
+      color:var(--text3); font-size:10px; font-weight:700;
+      letter-spacing:.8px; text-transform:uppercase; white-space:nowrap;
+    }
+    .sk-tooltip {
+      max-height:0; overflow:hidden; opacity:0; transform:translateY(-4px);
+      color:var(--text2); font-size:12.5px; line-height:1.6;
+      transition:max-height .32s ease, opacity .24s ease, transform .24s ease, margin-top .24s ease;
+    }
+    .sk-item:hover .sk-tooltip,
+    .sk-item:focus-visible .sk-tooltip {
+      max-height:72px; opacity:1; transform:translateY(0); margin-top:9px;
+    }
 
     /* ── projects ── */
     .proj-header { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:52px; flex-wrap:wrap; gap:16px; }
@@ -415,7 +487,7 @@ const GlobalStyles = () => (
       text-decoration:none; font-size:13px; color:var(--text2);
       transition:all var(--ease);
     }
-    .proj-link:hover { background:var(--cyan); color:#07080d; border-color:transparent; }
+    .proj-link:hover { background:var(--cyan); color:var(--accent-contrast); border-color:transparent; }
     .proj-title { font-family:var(--ff-head); font-size:18px; font-weight:700; letter-spacing:-.4px; margin-bottom:9px; }
     .proj-desc { font-size:13.5px; color:var(--text2); line-height:1.75; margin-bottom:22px; }
     .proj-stack { display:flex; gap:7px; flex-wrap:wrap; }
@@ -552,7 +624,7 @@ const GlobalStyles = () => (
       transition:all var(--ease);
     }
     .fsoc svg, .c-link-icon svg, .vcard-icon svg { width:16px; height:16px; }
-    .fsoc:hover { background:var(--cyan); color:#07080d; border-color:transparent; transform:translateY(-2px); }
+    .fsoc:hover { background:var(--cyan); color:var(--accent-contrast); border-color:transparent; transform:translateY(-2px); }
 
     /* ── reveal ── */
     .reveal { opacity:0; transform:translateY(28px); transition:opacity .65s ease, transform .65s ease; }
@@ -561,10 +633,18 @@ const GlobalStyles = () => (
 
     /* ── responsive ── */
     @media(max-width:1024px){
+      nav { gap:22px; padding:14px 28px; }
+      .nav-links { gap:18px; }
+      .nav-cta { min-height:42px; padding:0 15px; }
       .hero-inner { grid-template-columns:1fr; }
       .hero-card-wrap { display:none; }
       .about-grid, .exp-grid, .contact-grid { grid-template-columns:1fr; gap:40px; }
       .skills-grid, .proj-grid, .cert-grid { grid-template-columns:1fr 1fr; }
+    }
+    @media(max-width:920px){
+      nav { grid-template-columns:max-content max-content; justify-content:space-between; }
+      .nav-links { display:none; }
+      .hamburger { display:flex; }
     }
     @media(max-width:768px){
       nav { padding:15px 20px; }
@@ -615,27 +695,6 @@ function useReveal() {
     const obs = new IntersectionObserver(
       ([e]) => { if (e.isIntersecting) { e.target.classList.add("vis"); obs.unobserve(e.target); } },
       { threshold: 0.1 }
-    );
-    const el = ref.current;
-    if (el) obs.observe(el);
-    return () => { if (el) obs.unobserve(el); };
-  }, []);
-  return ref;
-}
-
-function useSkillAnim() {
-  const ref = useRef(null);
-  useEffect(() => {
-    const obs = new IntersectionObserver(
-      ([e]) => {
-        if (e.isIntersecting) {
-          e.target.querySelectorAll(".sk-fill").forEach((f, i) =>
-            setTimeout(() => f.classList.add("on"), i * 90)
-          );
-          obs.unobserve(e.target);
-        }
-      },
-      { threshold: 0.3 }
     );
     const el = ref.current;
     if (el) obs.observe(el);
@@ -708,10 +767,10 @@ const SKILLS = [
     title: "Frontend",
     sub: "Building what users see",
     items: [
-      { name: "React.js", pct: 82 },
-      { name: "HTML / CSS", pct: 88 },
-      { name: "JavaScript", pct: 80 },
-      { name: "Tailwind CSS", pct: 75 },
+      { name: "React.js", tag: "Components", note: "Built portfolio sections, API-driven weather UI, and role-aware career portal interfaces with reusable components." },
+      { name: "HTML / CSS", tag: "Responsive", note: "Comfortable with responsive layouts, CSS variables, animations, accessibility states, and polished page structure." },
+      { name: "JavaScript", tag: "UI Logic", note: "Used for dynamic UI state, form handling, API fetch lifecycles, DOM events, and interactive project details." },
+      { name: "Tailwind CSS", tag: "Utility UI", note: "Applied utility-first styling in TalentPulse for fast layout iteration, spacing systems, and consistent UI states." },
     ],
   },
   {
@@ -719,10 +778,10 @@ const SKILLS = [
     title: "Programming",
     sub: "Core CS foundations",
     items: [
-      { name: "Python", pct: 85 },
-      { name: "Java", pct: 78 },
-      { name: "C", pct: 72 },
-      { name: "OOP Concepts", pct: 84 },
+      { name: "Python", tag: "Data", note: "Used for data analysis, healthcare screening logic, statistical workflows, and quick prototype scripts." },
+      { name: "Java", tag: "Coursework", note: "Practiced core programming, object-oriented design, and structured problem solving through coursework." },
+      { name: "C", tag: "DSA Base", note: "Built foundation in memory-aware programming, DSA practice, pointers, and low-level control flow." },
+      { name: "OOP Concepts", tag: "Design", note: "Applied encapsulation, abstraction, and modular thinking while designing multi-role application flows." },
     ],
   },
   {
@@ -730,10 +789,10 @@ const SKILLS = [
     title: "Tools & Data",
     sub: "Ecosystem & analytics",
     items: [
-      { name: "Git / GitHub", pct: 86 },
-      { name: "Pandas / NumPy", pct: 78 },
-      { name: "Matplotlib / Tableau", pct: 72 },
-      { name: "VS Code / Canva", pct: 90 },
+      { name: "Git / GitHub", tag: "Workflow", note: "Managed project versions, GitHub repositories, collaboration flow, and deployment-ready portfolio changes." },
+      { name: "Pandas / NumPy", tag: "Analysis", note: "Handled tabular data cleaning, basic analysis, transformations, and numeric workflows for insights." },
+      { name: "Matplotlib / Tableau", tag: "Visuals", note: "Created charts and dashboards to communicate trends, distributions, and project findings clearly." },
+      { name: "VS Code / Canva", tag: "Daily Tools", note: "Daily development setup in VS Code, plus Canva for quick visual assets, thumbnails, and presentations." },
     ],
   },
 ];
@@ -800,23 +859,31 @@ const HACKATHONS = [
 
 /* ─── COMPONENTS ─────────────────────────────────────────── */
 function SkillCategory({ data }) {
-  const ref = useSkillAnim();
   return (
-    <div className={`sk-cat ${data.cls}`} ref={ref}>
+    <div className={`sk-cat ${data.cls}`}>
       <div className="sk-cat-title">{data.title}</div>
       <div className="sk-cat-sub">{data.sub}</div>
       <div className="sk-list">
-        {data.items.map((s) => (
-          <div className="sk-item" key={s.name}>
-            <div className="sk-info">
-              <span className="sk-name">{s.name}</span>
-              <span className="sk-pct">{s.pct}%</span>
-            </div>
-            <div className="sk-bar">
-              <div className="sk-fill" style={{ width: `${s.pct}%` }} />
-            </div>
-          </div>
-        ))}
+        {data.items.map((s, index) => {
+          const tooltipId = `${data.cls}-skill-${index}`;
+          return (
+          <button
+            type="button"
+            className="sk-item"
+            key={s.name}
+            aria-describedby={tooltipId}
+            data-cursor-label="Skill details"
+          >
+            <span className="sk-sigil" aria-hidden="true" />
+            <span className="sk-copy">
+              <span className="sk-info">
+                <span className="sk-name">{s.name}</span>
+                <span className="sk-tag">{s.tag}</span>
+              </span>
+              <span className="sk-tooltip" id={tooltipId}>{s.note}</span>
+            </span>
+          </button>
+        );})}
       </div>
     </div>
   );
@@ -950,10 +1017,26 @@ function CustomCursor() {
 }
 
 /* ─── MAIN COMPONENT ─────────────────────────────────────── */
+function getInitialTheme() {
+  if (typeof window === "undefined") return "dark";
+
+  const savedTheme = window.localStorage.getItem("portfolio-theme");
+  if (savedTheme === "light" || savedTheme === "dark") return savedTheme;
+
+  return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+}
+
 export default function Portfolio() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [formState, setFormState] = useState("idle"); // idle | sending | sent | error
   const [expandedProject, setExpandedProject] = useState(null);
+  const [theme, setTheme] = useState(getInitialTheme);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    document.documentElement.style.colorScheme = theme;
+    window.localStorage.setItem("portfolio-theme", theme);
+  }, [theme]);
 
   useEffect(() => {
     const supportsObserver = typeof window !== "undefined" && "IntersectionObserver" in window;
@@ -1168,6 +1251,8 @@ export default function Portfolio() {
     }
   }
 
+  const isLightTheme = theme === "light";
+
   return (
     <>
       <GlobalStyles />
@@ -1190,7 +1275,17 @@ export default function Portfolio() {
             <li key={s}><a href={`#${s}`}>{s.charAt(0).toUpperCase()+s.slice(1)}</a></li>
           ))}
         </ul>
-        <div style={{display:"flex",alignItems:"center",gap:"14px"}}>
+        <div className="nav-actions">
+          <button
+            type="button"
+            className="theme-toggle"
+            onClick={() => setTheme((current) => current === "dark" ? "light" : "dark")}
+            aria-label={`Switch to ${isLightTheme ? "dark" : "light"} mode`}
+            aria-pressed={isLightTheme}
+            title={`Switch to ${isLightTheme ? "dark" : "light"} mode`}
+          >
+            {isLightTheme ? <Moon size={18} weight="bold" /> : <Sun size={18} weight="bold" />}
+          </button>
           <a 
           href="https://drive.google.com/file/d/1W_D2ieM8UwQcTUMdAL-A7g0p_uAia0FG/view?usp=sharing" 
           download="Abhyodhya_Kumar_Resume.pdf"
